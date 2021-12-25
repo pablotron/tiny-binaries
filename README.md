@@ -50,3 +50,17 @@ mkdir ./out && chmod 777 ./out
 # bind mount output directory, then copy generated reports to output directory
 docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
 ```
+[nasm]: https://www.nasm.us/
+  "Netwide Assembler"
+[svg]: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+  "Scalable Vector Graphics"
+[csv]: https://en.wikipedia.org/wiki/Comma-separated_values
+  "Comma-Separated Values"
+[gas]: https://en.wikipedia.org/wiki/GNU_Assembler
+  "GNU assembler (horrible AT&T syntax)"
+[elf]: https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+  "Executable and Linkable Format"
+[upx]: https://en.wikipedia.org/wiki/UPX
+  "Ultimate Packer for eXecutables"
+[glibc]: https://en.wikipedia.org/wiki/Glibc
+  "GNU C library"
