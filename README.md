@@ -64,3 +64,5 @@ docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
   "Ultimate Packer for eXecutables"
 [glibc]: https://en.wikipedia.org/wiki/Glibc
   "GNU C library"
+[musl]: https://en.wikipedia.org/wiki/Musl
+  "musl C standard library"
