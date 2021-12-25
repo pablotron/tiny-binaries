@@ -1,0 +1,16 @@
+# requires nightly
+# cargo-features = ["strip"]
+
+[package]
+name = "hi"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[profile.release]
+# strip = true  # strip symbols
+opt-level = "z" # optimize for size
+lto = true # enable LTO
