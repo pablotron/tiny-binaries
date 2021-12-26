@@ -84,7 +84,7 @@ Generated using the following languages and build methods:
 ## Build Instructions
 
 There is a top-level `Dockerfile` which you can use to generate all
-of the builds, the output [CSV][], and the output [SVGs][svg].
+of the binaries, the output [CSV][], and the output [SVGs][svg].
 
 ```sh
 # build all stages
@@ -100,6 +100,26 @@ mkdir ./out && chmod 777 ./out
 
 # bind mount output directory, then copy generated reports to output directory
 docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
+```
+
+Alternatively, you can inspect the contents of /data/bin to look at
+the generated binaries, like so:
+
+```sh
+# execute shell in container
+docker run --rm -it pablotron/tiny-binaries sh
+
+# switch to output binary directory
+cd /data/bin
+
+# install file
+apk add file
+
+# verify that all binaries are statically linked
+file *
+
+# check file sizes of all binaries
+wc -c *
 ```
 
 [nasm]: https://www.nasm.us/

@@ -175,7 +175,22 @@ RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/siz
 #   docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
 #
 # Alternatively, you can inspect the contents of /data/bin to look at
-# the generated binaries.
+# the generated binaries, like so:
+#
+#   # execute shell in container
+#   docker run --rm -it pablotron/tiny-binaries sh
+#
+#   # switch to output binary directory
+#   cd /data/bin
+#
+#   # install file
+#   apk add file
+#
+#   # verify that all binaries are statically linked
+#   file *
+#
+#   # check file sizes of all binaries
+#   wc -c *
 #
 FROM alpine:3.15
 RUN mkdir /data
