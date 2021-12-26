@@ -158,18 +158,31 @@ COPY --from=c-and-asm /src/asm-opt/hi /out/bin/asm-opt
 COPY --from=c-and-asm /src/asm-elf/hi /out/bin/asm-elf
 COPY ./bin/gen.rb /gen.rb
 COPY ./bin/plot.py /plot.py
+
+# generate generate csv and svgs
 RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/sizes-tiny.svg"]
 
 #
-# Final image which copies CSV and SVGs to /out
+# Final image which copies generated binaries to /data/bin, generated
+# SVGs to /data, and generated CSV to /data.
 #
-# FIXME: this is kind of a screwy way to do things, perhaps I should keep
-# the binaries too and set the default command to copy the results to
-# /out instead so people can examine the generated binaries?
+# If you want to run this image, it should be run like so:
+#
+#   # create output directory
+#   mkdir ./out && chmod 777 ./out
+#
+#   # copy csv and svgs to ./out
+#   docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
+#
+# Alternatively, you can inspect the contents of /data/bin to look at
+# the generated binaries.
 #
 FROM alpine:3.15
 RUN mkdir /data
 COPY --from=data /out/data/sizes.csv /data/sizes.csv
 COPY --from=data /out/data/sizes-all.svg /data/sizes-all.svg
 COPY --from=data /out/data/sizes-tiny.svg /data/sizes-tiny.svg
-ENTRYPOINT ["/bin/cp", "/data/sizes.csv", "/data/sizes-all.svg", "/data/sizes-tiny.svg", "/out"]
+COPY --from=data /out/bin /data/bin
+
+# default command
+CMD ["/bin/cp", "/data/sizes.csv", "/data/sizes-all.svg", "/data/sizes-tiny.svg", "/out"]
