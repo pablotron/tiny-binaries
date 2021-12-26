@@ -39,97 +39,118 @@ RUN apk update && \
     upx --brute -o hi-ldflags-upx hi-ldflags
 
 #
-# C/glibc build environment.
+# Combined build environment for the following:
 #
-# FIXME: should be combined with other C envs.
+# * c-glibc
+# * c-musl
+# * c-asm
+# * asm-naive
+# * asm-opt
+# * asm-elf
 #
-FROM debian:bullseye-slim AS c-libc-glibc
-COPY ./src/c-libc /src
-WORKDIR /src
+FROM debian:bullseye-slim AS c-and-asm
+COPY ./src/c-libc /src/c-glibc
+COPY ./src/c-libc /src/c-musl
+COPY ./src/c-asm /src/c-asm
+COPY ./src/asm-naive /src/asm-naive
+COPY ./src/asm-opt /src/asm-opt
+COPY ./src/asm-elf-1 /src/asm-elf
 
 RUN apt-get update && \
-    apt-get install -y build-essential make gcc-10 upx-ucl && \
+    apt-get install -y build-essential make gcc-10 musl-dev musl-tools nasm upx-ucl && \
+    rm -rf /var/lib/apt/lists/* && \
+    cd /src/c-glibc && \
     make && \
-    upx --best -o hi-upx hi
-
-#
-# C/musl build environment.
-#
-# FIXME: should be combined with other C envs.
-#
-FROM debian:bullseye-slim AS c-libc-musl
-COPY ./src/c-libc /src
-WORKDIR /src
-
-RUN apt-get update && \
-    apt-get install -y build-essential make gcc-10 musl-dev musl-tools upx-ucl && \
-    make CC=musl-gcc
-    # fails with "NotCompressible"
-    # upx -o hi-upx hi
-
-#
-# C w/ inline asm build environment.
-#
-# FIXME: should be combined with other C envs.
-#
-FROM debian:bullseye-slim AS c-asm
-COPY ./src/c-asm /src
-WORKDIR /src
-
-RUN apt-get update && \
-    apt-get install -y build-essential nasm make gcc-10 upx-ucl && \
-    make
-#
-# Unoptimized assembly build environment.
-#
-# FIXME: should be combined with other asm envs.
-#
-FROM debian:bullseye-slim AS asm-naive
-COPY ./src/asm-naive /src
-WORKDIR /src
-
-RUN apt-get update && \
-    apt-get install -y build-essential nasm make && \
+    upx --best -o hi-upx hi && \
+    cd /src/c-musl && \
+    make CC=musl-gcc && \
+    cd /src/c-asm && \
+    make && \
+    cd /src/asm-naive && \
+    make && \
+    cd /src/asm-opt && \
+    make && \
+    cd /src/asm-elf && \
     make
 
-#
-# Optimized assembly build environment.
-#
-# FIXME: should be combined with other asm envs.
-#
-FROM debian:bullseye-slim AS asm-opt
-COPY ./src/asm-opt /src
-WORKDIR /src
-
-RUN apt-get update && \
-    apt-get install -y build-essential nasm make && \
-    make
-
-#
-# Optimized and packed assembly build environment.
-#
-# FIXME: should be combined with other asm envs.
-#
-FROM debian:bullseye-slim AS asm-elf-0
-COPY ./src/asm-elf-0 /src
-WORKDIR /src
-
-RUN apt-get update && \
-    apt-get install -y build-essential nasm make && \
-    make
-
-#
-# Optimized and packed assembly build environment.
-#
-# FIXME: should be combined with other asm envs.
-#
-FROM debian:bullseye-slim AS asm-elf-1
-COPY ./src/asm-elf-1 /src
-WORKDIR /src
-
-RUN apt-get update && \
-    apt-get install -y build-essential nasm make && \
-    make
+# #
+# # C/musl build environment.
+# #
+# # FIXME: should be combined with other C envs.
+# #
+# FROM debian:bullseye-slim AS c-libc-musl
+# COPY ./src/c-libc /src
+# WORKDIR /src
+# 
+# RUN apt-get update && \
+#     apt-get install -y build-essential make gcc-10 musl-dev musl-tools upx-ucl && \
+#     make CC=musl-gcc
+#     # fails with "NotCompressible"
+#     # upx -o hi-upx hi
+# 
+# #
+# # C w/ inline asm build environment.
+# #
+# # FIXME: should be combined with other C envs.
+# #
+# FROM debian:bullseye-slim AS c-asm
+# COPY ./src/c-asm /src
+# WORKDIR /src
+# 
+# RUN apt-get update && \
+#     apt-get install -y build-essential nasm make gcc-10 upx-ucl && \
+#     make
+# #
+# # Unoptimized assembly build environment.
+# #
+# # FIXME: should be combined with other asm envs.
+# #
+# FROM debian:bullseye-slim AS asm-naive
+# COPY ./src/asm-naive /src
+# WORKDIR /src
+# 
+# RUN apt-get update && \
+#     apt-get install -y build-essential nasm make && \
+#     make
+# 
+# #
+# # Optimized assembly build environment.
+# #
+# # FIXME: should be combined with other asm envs.
+# #
+# FROM debian:bullseye-slim AS asm-opt
+# COPY ./src/asm-opt /src
+# WORKDIR /src
+# 
+# RUN apt-get update && \
+#     apt-get install -y build-essential nasm make && \
+#     make
+# 
+# #
+# # Optimized and packed assembly build environment.
+# #
+# # FIXME: should be combined with other asm envs.
+# #
+# FROM debian:bullseye-slim AS asm-elf-0
+# COPY ./src/asm-elf-0 /src
+# WORKDIR /src
+# 
+# RUN apt-get update && \
+#     apt-get install -y build-essential nasm make && \
+#     make
+# 
+# #
+# # Optimized and packed assembly build environment.
+# #
+# # FIXME: should be combined with other asm envs.
+# #
+# FROM debian:bullseye-slim AS asm-elf-1
+# COPY ./src/asm-elf-1 /src
+# WORKDIR /src
+# 
+# RUN apt-get update && \
+#     apt-get install -y build-essential nasm make && \
+#     make
 
 #
 # Rust 1.57 build environment
@@ -187,14 +208,14 @@ COPY --from=rust-1.57 /src/opt-oz/target/release/hi /out/bin/rust-1.57-oz
 COPY --from=rust-1.57 /src/opt-oz/target/release/hi-upx /out/bin/rust-1.57-oz-upx
 COPY --from=rust-1.57 /src/opt-strip/target/release/hi /out/bin/rust-1.57-strip
 COPY --from=rust-1.57 /src/opt-strip/target/release/hi-upx /out/bin/rust-1.57-strip-upx
-COPY --from=c-libc-glibc /src/hi /out/bin/c-glibc
-COPY --from=c-libc-glibc /src/hi-upx /out/bin/c-glibc-upx
-COPY --from=c-libc-musl /src/hi /out/bin/c-musl
+COPY --from=c-and-asm /src/c-glibc/hi /out/bin/c-glibc
+COPY --from=c-and-asm /src/c-glibc/hi-upx /out/bin/c-glibc-upx
+COPY --from=c-and-asm /src/c-musl/hi /out/bin/c-musl
 # COPY --from=c-libc-musl /src/hi-upx /out/bin/c-musl-upx
-COPY --from=c-asm /src/hi /out/bin/c-asm
-COPY --from=asm-naive /src/hi /out/bin/asm-naive
-COPY --from=asm-opt /src/hi /out/bin/asm-opt
-COPY --from=asm-elf-1 /src/hi /out/bin/asm-elf
+COPY --from=c-and-asm /src/c-asm/hi /out/bin/c-asm
+COPY --from=c-and-asm /src/asm-naive/hi /out/bin/asm-naive
+COPY --from=c-and-asm /src/asm-opt/hi /out/bin/asm-opt
+COPY --from=c-and-asm /src/asm-elf/hi /out/bin/asm-elf
 COPY ./bin/gen.rb /gen.rb
 COPY ./bin/plot.py /plot.py
 RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/sizes-tiny.svg"]
