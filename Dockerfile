@@ -1,5 +1,11 @@
-# note: tested alpine and bullseye and the binaries are
-# the same size, so i removed the bullseye tests
+#
+# Build static binaries using several languages and build options, then
+# generates a CSV of the binary sizes and an SVG of the results.
+#
+# See https://github.com/pablotron/tiny-binaries for details.
+#
+
+# old notes:
 # go 1.15: ~2.0M
 # go 1.15 + ldflags: ~1.5M
 # go 1.17 + ldflags: ~1.2M
@@ -12,6 +18,9 @@
 
 #
 # Go 1.16 build environment.
+#
+# Note: tested w/ both bullseye and alpine and the binary size results
+# were identical.
 #
 FROM golang:1.16.12-alpine AS go-1.16
 COPY ./src/go /src
@@ -26,6 +35,9 @@ RUN apk update && \
 
 #
 # Go 1.17 build environment.
+#
+# Note: tested w/ both bullseye and alpine and the binary size results
+# were identical.
 #
 FROM golang:1.17.5-alpine AS go-1.17
 COPY ./src/go /src
@@ -47,6 +59,11 @@ RUN apk update && \
 # * asm-naive
 # * asm-opt
 # * asm-elf
+#
+# Notes:
+# * c-glibc packed with `upx --brute` works, but binary produces no
+#   output. `upx --best` works fine.
+# * upx refuses to pack c-musl, c-asm, asm-naive, asm-opt, and asm-elf.
 #
 FROM debian:bullseye-slim AS c-and-asm
 COPY ./src/c-libc /src/c-glibc
