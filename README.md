@@ -65,10 +65,15 @@ Generated using the following languages and build methods:
 
 **Notes:**
 
-* [Debian][] only packages [Go][] 1.15.15 as of December 2021.
+* [Debian][] only packages [Go][] 1.15.15 as of December 2021.  Yeesh.
+* Versions of `gcc`, `upx`, `ld`, `strip`, and `nasm` are from the
+  current version of [Debian][].
+* C compiled with [GCC][] 10.  I also tested with [Clang][], but the
+  results did not appear to be substantially different.
 * `c-glibc-upx` binary packed with `upx --brute` produced no output, so it uses
   `upx --best` instead.
 * `upx` fails with `NotCompressible` when run against `c-musl`.
+* `upx` refuses to compress any of the `asm` binaries.
 * [Rust][] binaries packed with `upx --brute` produced no output, so they use
   `upx --best` instead.
 * [Rust][] nightly has `cargo-features = ["strip"]` but it is not available in
@@ -76,7 +81,7 @@ Generated using the following languages and build methods:
 * ELF/PH overlap and unverified byte regions used by `asm-elf` were borrowed from
   [Tiny ELF Files: Revisited in 2021][tiny-elf].  Thanks Nathan!
 
-## Build
+## Build Instructions
 
 There is a top-level `Dockerfile` which you can use to generate all
 of the builds, the output [CSV][], and the output [SVGs][svg].
@@ -123,3 +128,7 @@ docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
   "Tiny ELF Files: Revisited in 2021"
 [log scale]: https://en.wikipedia.org/wiki/Logarithmic_scale
   "Logarithmic scale"
+[gcc]: https://gcc.gnu.org/
+  "GNU Compiler Collection"
+[clang]: https://clang.llvm.org/
+  "LLVM C language frontend compiler"
