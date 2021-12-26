@@ -163,6 +163,10 @@ RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/siz
 #
 # Final image which copies CSV and SVGs to /out
 #
+# FIXME: this is kind of a screwy way to do things, perhaps I should keep
+# the binaries too and set the default command to copy the results to
+# /out instead so people can examine the generated binaries?
+#
 FROM alpine:3.15
 RUN mkdir /data
 COPY --from=data /out/data/sizes.csv /data/sizes.csv
