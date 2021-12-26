@@ -1,13 +1,16 @@
 # Tiny Binaries
 
 Static x86-64 Linux binaries generated using a variety of languages and
-build methods which do the following:
+build methods and sorted by size.
 
-1. print `"hi!\n"` to standard output
-2. exit with an exit code of `0`
+The generated binaries do the following:
 
-The binaries were generated using the following languages and build
-methods:
+1. print `"hi!\n"` to standard output.
+2. exit with an exit code of `0`.
+
+![Static x86-64 Linux Binary Sizes](out/sizes-all.svg)
+
+Generated using the following languages and build methods:
 
 | Name | Language | Description |
 | ---- | -------- | ----------- |
@@ -36,6 +39,17 @@ methods:
 | `asm-naive` | Assembly | Unoptimized x86-64 assembly, built with [nasm][] and linked with `ld`. |
 | `asm-opt` | Assembly | Optimized x86-64 assembly, built with [nasm][]. |
 | `asm-elf` | Assembly | Optimized x86-64 assembly, built with [nasm][].  Code is embedded in unverified portions of the [ELF][] and program header. |
+
+**Notes:**
+
+* [Debian][] only packages [Go][] 1.15.15 as of December 2021.
+* `c-glibc-upx` binary packed with `upx --brute` produced no output, so it uses
+  `upx --best` instead.
+* `upx` fails with `NotCompressible` when run against `c-musl`.
+* [Rust][] binaries packed with `upx --brute` produced no output, so they use
+  `upx --best` instead.
+* [Rust][] nightly has `cargo-features = ["strip"]` but it is not available in
+  stable, so I used `strip -s` instead.
 
 ## Build
 
@@ -77,3 +91,5 @@ docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
   "Go programming language"
 [rust]: https://www.rust-lang.org/
   "Rust programming language"
+[debian]: https://debian.org/
+  "Debian Linux distribution"
