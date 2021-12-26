@@ -73,85 +73,6 @@ RUN apt-get update && \
     cd /src/asm-elf && \
     make
 
-# #
-# # C/musl build environment.
-# #
-# # FIXME: should be combined with other C envs.
-# #
-# FROM debian:bullseye-slim AS c-libc-musl
-# COPY ./src/c-libc /src
-# WORKDIR /src
-# 
-# RUN apt-get update && \
-#     apt-get install -y build-essential make gcc-10 musl-dev musl-tools upx-ucl && \
-#     make CC=musl-gcc
-#     # fails with "NotCompressible"
-#     # upx -o hi-upx hi
-# 
-# #
-# # C w/ inline asm build environment.
-# #
-# # FIXME: should be combined with other C envs.
-# #
-# FROM debian:bullseye-slim AS c-asm
-# COPY ./src/c-asm /src
-# WORKDIR /src
-# 
-# RUN apt-get update && \
-#     apt-get install -y build-essential nasm make gcc-10 upx-ucl && \
-#     make
-# #
-# # Unoptimized assembly build environment.
-# #
-# # FIXME: should be combined with other asm envs.
-# #
-# FROM debian:bullseye-slim AS asm-naive
-# COPY ./src/asm-naive /src
-# WORKDIR /src
-# 
-# RUN apt-get update && \
-#     apt-get install -y build-essential nasm make && \
-#     make
-# 
-# #
-# # Optimized assembly build environment.
-# #
-# # FIXME: should be combined with other asm envs.
-# #
-# FROM debian:bullseye-slim AS asm-opt
-# COPY ./src/asm-opt /src
-# WORKDIR /src
-# 
-# RUN apt-get update && \
-#     apt-get install -y build-essential nasm make && \
-#     make
-# 
-# #
-# # Optimized and packed assembly build environment.
-# #
-# # FIXME: should be combined with other asm envs.
-# #
-# FROM debian:bullseye-slim AS asm-elf-0
-# COPY ./src/asm-elf-0 /src
-# WORKDIR /src
-# 
-# RUN apt-get update && \
-#     apt-get install -y build-essential nasm make && \
-#     make
-# 
-# #
-# # Optimized and packed assembly build environment.
-# #
-# # FIXME: should be combined with other asm envs.
-# #
-# FROM debian:bullseye-slim AS asm-elf-1
-# COPY ./src/asm-elf-1 /src
-# WORKDIR /src
-# 
-# RUN apt-get update && \
-#     apt-get install -y build-essential nasm make && \
-#     make
-
 #
 # Rust 1.57 build environment
 #
@@ -163,6 +84,7 @@ WORKDIR /src
 # ref: https://github.com/johnthagen/min-sized-rust
 RUN apt-get update && \
     apt-get install -y upx-ucl && \
+    rm -rf /var/lib/apt/lists/* && \
     cd /src/default && \
     cargo build --release && \
     upx --best -o /src/default/target/release/hi-upx /src/default/target/release/hi && \
@@ -187,7 +109,8 @@ RUN apt-get update && \
 FROM ruby:3.0.3-slim-bullseye AS data
 RUN mkdir -p /out/bin /out/data && \
     apt-get update && \
-    apt-get install -y python3-matplotlib python3-numpy
+    apt-get install -y python3-matplotlib python3-numpy && \
+    rm -rf /var/lib/apt/lists/*
 
 # copy generated binaries
 COPY --from=go-1.16 /src/hi-default /out/bin/go-1.16-default
