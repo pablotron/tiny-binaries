@@ -1,7 +1,7 @@
 # Tiny Binaries
 
-Static x86-64 Linux binaries generated using a variety of languages and
-build methods and sorted by size.
+Tiny static x86-64 Linux binaries, generated using a variety of languages and
+build methods, then sorted by size.
 
 The generated binaries do the following:
 
@@ -10,10 +10,14 @@ The generated binaries do the following:
 
 <img
   src='out/sizes-all.svg'
-  width='100%' 
+  width='100%'
   title="Static x86-64 Linux Binary Sizes"
   alt="Static x86-64 Linux Binary Sizes"
 />
+
+The raw results are available as a [CSV][] in the `out/` directory.
+
+## Languages and Build Methods
 
 Generated using the following languages and build methods:
 
@@ -55,6 +59,8 @@ Generated using the following languages and build methods:
   `upx --best` instead.
 * [Rust][] nightly has `cargo-features = ["strip"]` but it is not available in
   stable, so I used `strip -s` instead.
+* ELF/PH overlap and unverified byte regions used by `asm-elf` were borrowed from
+  [Tiny ELF Files: Revisited in 2021][tiny-elf].  Thanks Nathan!
 
 ## Build
 
@@ -76,6 +82,7 @@ mkdir ./out && chmod 777 ./out
 # bind mount output directory, then copy generated reports to output directory
 docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
 ```
+
 [nasm]: https://www.nasm.us/
   "Netwide Assembler"
 [svg]: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics
@@ -98,3 +105,5 @@ docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
   "Rust programming language"
 [debian]: https://debian.org/
   "Debian Linux distribution"
+[tiny-elf]: https://nathanotterness.com/2021/10/tiny_elf_modernized.html
+  "Tiny ELF Files: Revisited in 2021"
