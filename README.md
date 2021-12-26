@@ -1,21 +1,35 @@
 # Tiny Binaries
 
-Tiny static x86-64 Linux binaries, generated using a variety of languages and
-build methods, then sorted by size.
-
-The generated binaries do the following:
+Tiny static x86-64 Linux binaries which do the following:
 
 1. print `"hi!\n"` to standard output.
 2. exit with an exit code of `0`.
 
+The binaries were generated using a variety of languages and build
+methods, then sorted by size.
+
+## Results
+
+Plot of all results (warning: X axis is log scale):
+
 <img
   src='out/sizes-all.svg'
   width='100%'
-  title="Static x86-64 Linux Binary Sizes"
-  alt="Static x86-64 Linux Binary Sizes"
+  title="Static x86-64 Linux binary sizes (log scale)"
+  alt="Static x86-64 Linux binary sizes (log scale)"
 />
 
-The raw results are available as a [CSV][] in the `out/` directory.
+Plot of tiny results (less than 1k, linear scale):
+
+<img
+  src='out/sizes-tiny.svg'
+  width='100%'
+  title="Tiny static x86-64 Linux binary sizes"
+  alt="Tiny static x86-64 Linux binary sizes"
+/>
+
+Raw size results are available in the [`out/` directory](./out/) in
+[CSV][] format.
 
 ## Languages and Build Methods
 
