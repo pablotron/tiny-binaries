@@ -10,7 +10,7 @@ methods, then sorted by size.
 
 ## Results
 
-Plot of all results (warning: X axis is log scale):
+Plot of all results (**Note:** [log scale][] X axis):
 
 <img
   src='out/sizes-all.svg'
@@ -121,3 +121,5 @@ docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
   "Debian Linux distribution"
 [tiny-elf]: https://nathanotterness.com/2021/10/tiny_elf_modernized.html
   "Tiny ELF Files: Revisited in 2021"
+[log scale]: https://en.wikipedia.org/wiki/Logarithmic_scale
+  "Logarithmic scale"
