@@ -8,7 +8,15 @@ The generated binaries do the following:
 1. print `"hi!\n"` to standard output.
 2. exit with an exit code of `0`.
 
-![Static x86-64 Linux Binary Sizes](out/sizes-all.svg | width="100%")
+<a
+  href='out/sizes-all.svg'
+  title="Static x86-64 Linux Binary Sizes"
+><img
+  src='out/sizes-all.svg'
+  width='100%' 
+  title="Static x86-64 Linux Binary Sizes"
+  alt="Static x86-64 Linux Binary Sizes"
+/></a>
 
 Generated using the following languages and build methods:
 
