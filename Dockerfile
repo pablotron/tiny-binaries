@@ -10,6 +10,9 @@
 # asm + nostdinc: 456B
 # asm + nostdinc + slim: 368B
 
+#
+# Go 1.16 build environment.
+#
 FROM golang:1.16.12-alpine AS go-1.16
 COPY ./src/go /src
 WORKDIR /src
@@ -21,6 +24,9 @@ RUN apk update && \
     upx --brute -o hi-default-upx hi-default && \
     upx --brute -o hi-ldflags-upx hi-ldflags
 
+#
+# Go 1.17 build environment.
+#
 FROM golang:1.17.5-alpine AS go-1.17
 COPY ./src/go /src
 WORKDIR /src
@@ -32,6 +38,11 @@ RUN apk update && \
     upx --brute -o hi-default-upx hi-default && \
     upx --brute -o hi-ldflags-upx hi-ldflags
 
+#
+# C/glibc build environment.
+#
+# FIXME: should be combined with other C envs.
+#
 FROM debian:bullseye-slim AS c-libc-glibc
 COPY ./src/c-libc /src
 WORKDIR /src
@@ -41,6 +52,11 @@ RUN apt-get update && \
     make && \
     upx --best -o hi-upx hi
 
+#
+# C/musl build environment.
+#
+# FIXME: should be combined with other C envs.
+#
 FROM debian:bullseye-slim AS c-libc-musl
 COPY ./src/c-libc /src
 WORKDIR /src
@@ -51,6 +67,11 @@ RUN apt-get update && \
     # fails with "NotCompressible"
     # upx -o hi-upx hi
 
+#
+# C w/ inline asm build environment.
+#
+# FIXME: should be combined with other C envs.
+#
 FROM debian:bullseye-slim AS c-asm
 COPY ./src/c-asm /src
 WORKDIR /src
@@ -58,7 +79,11 @@ WORKDIR /src
 RUN apt-get update && \
     apt-get install -y build-essential nasm make gcc-10 upx-ucl && \
     make
-
+#
+# Unoptimized assembly build environment.
+#
+# FIXME: should be combined with other asm envs.
+#
 FROM debian:bullseye-slim AS asm-naive
 COPY ./src/asm-naive /src
 WORKDIR /src
@@ -67,6 +92,11 @@ RUN apt-get update && \
     apt-get install -y build-essential nasm make && \
     make
 
+#
+# Optimized assembly build environment.
+#
+# FIXME: should be combined with other asm envs.
+#
 FROM debian:bullseye-slim AS asm-opt
 COPY ./src/asm-opt /src
 WORKDIR /src
@@ -75,6 +105,11 @@ RUN apt-get update && \
     apt-get install -y build-essential nasm make && \
     make
 
+#
+# Optimized and packed assembly build environment.
+#
+# FIXME: should be combined with other asm envs.
+#
 FROM debian:bullseye-slim AS asm-elf-0
 COPY ./src/asm-elf-0 /src
 WORKDIR /src
@@ -83,6 +118,11 @@ RUN apt-get update && \
     apt-get install -y build-essential nasm make && \
     make
 
+#
+# Optimized and packed assembly build environment.
+#
+# FIXME: should be combined with other asm envs.
+#
 FROM debian:bullseye-slim AS asm-elf-1
 COPY ./src/asm-elf-1 /src
 WORKDIR /src
@@ -91,6 +131,9 @@ RUN apt-get update && \
     apt-get install -y build-essential nasm make && \
     make
 
+#
+# Rust 1.57 build environment
+#
 FROM rust:1.57-bullseye AS rust-1.57
 COPY ./src/rust /src
 WORKDIR /src
@@ -117,10 +160,15 @@ RUN apt-get update && \
     strip -s /src/opt-strip/target/release/hi && \
     upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi
 
+#
+# generate CSV and SVGs
+#
 FROM ruby:3.0.3-slim-bullseye AS data
 RUN mkdir -p /out/bin /out/data && \
     apt-get update && \
     apt-get install -y python3-matplotlib python3-numpy
+
+# copy generated binaries
 COPY --from=go-1.16 /src/hi-default /out/bin/go-1.16-default
 COPY --from=go-1.16 /src/hi-ldflags /out/bin/go-1.16-ldflags
 COPY --from=go-1.16 /src/hi-default-upx /out/bin/go-1.16-default-upx
@@ -151,10 +199,12 @@ COPY ./bin/gen.rb /gen.rb
 COPY ./bin/plot.py /plot.py
 RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/sizes-tiny.svg"]
 
+#
+# Final image which copies CSV and SVGs to /out
+#
 FROM alpine:3.15
 RUN mkdir /data
 COPY --from=data /out/data/sizes.csv /data/sizes.csv
 COPY --from=data /out/data/sizes-all.svg /data/sizes-all.svg
 COPY --from=data /out/data/sizes-tiny.svg /data/sizes-tiny.svg
 ENTRYPOINT ["/bin/cp", "/data/sizes.csv", "/data/sizes-all.svg", "/data/sizes-tiny.svg", "/out"]
-
