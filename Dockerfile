@@ -166,7 +166,7 @@ RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/siz
 # Final image which copies generated binaries to /data/bin, generated
 # SVGs to /data, and generated CSV to /data.
 #
-# If you want to run this image, it should be run like so:
+# To run this image, do this:
 #
 #   # create output directory
 #   mkdir ./out && chmod 777 ./out
@@ -174,8 +174,7 @@ RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/siz
 #   # copy csv and svgs to ./out
 #   docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
 #
-# Alternatively, you can inspect the contents of /data/bin to look at
-# the generated binaries, like so:
+# You can inspect the generated binaries in `/data/bin` like this:
 #
 #   # execute shell in container
 #   docker run --rm -it pablotron/tiny-binaries sh
@@ -186,10 +185,10 @@ RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/siz
 #   # install file
 #   apk add file
 #
-#   # verify that all binaries are statically linked
+#   # verify that binaries are statically linked
 #   file *
 #
-#   # check file sizes of all binaries
+#   # verify binary file sizes
 #   wc -c *
 #
 FROM alpine:3.15

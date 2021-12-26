@@ -102,8 +102,7 @@ mkdir ./out && chmod 777 ./out
 docker run --rm -it -v $(pwd)/out:/out pablotron/tiny-binaries
 ```
 
-Alternatively, you can inspect the contents of /data/bin to look at
-the generated binaries, like so:
+You can inspect the generated binaries in `/data/bin` like this:
 
 ```sh
 # execute shell in container
@@ -115,10 +114,10 @@ cd /data/bin
 # install file
 apk add file
 
-# verify that all binaries are statically linked
+# verify that binaries are statically linked
 file *
 
-# check file sizes of all binaries
+# verify binary file sizes
 wc -c *
 ```
 
