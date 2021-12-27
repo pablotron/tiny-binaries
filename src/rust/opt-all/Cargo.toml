@@ -11,6 +11,7 @@ edition = "2021"
 [dependencies]
 
 [profile.release]
-# strip = true  # strip symbols
+panic = "abort" # abort on panic
+# strip = true  # strip symbols (requires nightly)
 opt-level = "z" # optimize for size
 lto = true # enable LTO

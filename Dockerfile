@@ -105,6 +105,10 @@ RUN apt-get update && \
     cd /src/default && \
     cargo build --release && \
     upx --best -o /src/default/target/release/hi-upx /src/default/target/release/hi && \
+    cd /src/opt-abort && \
+    cargo build --release && \
+    strip -s /src/opt-abort/target/release/hi && \
+    upx --best -o /src/opt-abort/target/release/hi-upx /src/opt-abort/target/release/hi && \
     cd /src/opt-all && \
     cargo build --release && \
     strip -s /src/opt-all/target/release/hi && \
@@ -140,6 +144,8 @@ COPY --from=go-1.17 /src/hi-default-upx /out/bin/go-1.17-default-upx
 COPY --from=go-1.17 /src/hi-ldflags-upx /out/bin/go-1.17-ldflags-upx
 COPY --from=rust-1.57 /src/default/target/release/hi /out/bin/rust-1.57-default
 COPY --from=rust-1.57 /src/default/target/release/hi-upx /out/bin/rust-1.57-default-upx
+COPY --from=rust-1.57 /src/opt-abort/target/release/hi /out/bin/rust-1.57-abort
+COPY --from=rust-1.57 /src/opt-abort/target/release/hi-upx /out/bin/rust-1.57-abort-upx
 COPY --from=rust-1.57 /src/opt-all/target/release/hi /out/bin/rust-1.57-all
 COPY --from=rust-1.57 /src/opt-all/target/release/hi-upx /out/bin/rust-1.57-all-upx
 COPY --from=rust-1.57 /src/opt-lto/target/release/hi /out/bin/rust-1.57-lto
