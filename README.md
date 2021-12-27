@@ -78,6 +78,8 @@ Generated using the following languages and build methods:
   `upx --best` instead.
 * [Rust][] nightly has `cargo-features = ["strip"]` but it is not available in
   stable, so I used `strip -s` instead.
+* [Rust][] optimization options were borrowed from [Minimizing Rust
+  Binary Size][rust-min].
 * ELF/PH overlap and unverified byte regions used by `asm-elf` were borrowed from
   [Tiny ELF Files: Revisited in 2021][tiny-elf].  Thanks Nathan!
 
@@ -151,3 +153,5 @@ wc -c *
   "GNU Compiler Collection"
 [clang]: https://clang.llvm.org/
   "LLVM C language frontend compiler"
+[rust-min]: https://github.com/johnthagen/min-sized-rust
+  "Minimizing Rust Binary Size"
