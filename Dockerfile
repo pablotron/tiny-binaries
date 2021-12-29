@@ -102,6 +102,8 @@ WORKDIR /src
 RUN apt-get update && \
     apt-get install -y upx-ucl && \
     rm -rf /var/lib/apt/lists/* && \
+    rustup toolchain install nightly && \
+    rustup component add rust-src --toolchain nightly && \
     cd /src/default && \
     cargo build --release && \
     upx --best -o /src/default/target/release/hi-upx /src/default/target/release/hi && \
@@ -122,7 +124,15 @@ RUN apt-get update && \
     cd /src/opt-strip && \
     cargo build --release && \
     strip -s /src/opt-strip/target/release/hi && \
-    upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi
+    upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi && \
+    cd /src/opt-build-std && \
+    cargo +nightly build -Z build-std=std,panic_abort --target x86_64-unknown-linux-gnu --release && \
+    strip -s /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi && \
+    upx --best -o /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi-upx /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi && \
+    cd /src/opt-immediate-abort && \
+    cargo +nightly build -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu --release && \
+    strip -s /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi && \
+    upx --best -o /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi-upx /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi
 
 #
 # generate CSV and SVGs
@@ -154,6 +164,10 @@ COPY --from=rust-1.57 /src/opt-oz/target/release/hi /out/bin/rust-1.57-oz
 COPY --from=rust-1.57 /src/opt-oz/target/release/hi-upx /out/bin/rust-1.57-oz-upx
 COPY --from=rust-1.57 /src/opt-strip/target/release/hi /out/bin/rust-1.57-strip
 COPY --from=rust-1.57 /src/opt-strip/target/release/hi-upx /out/bin/rust-1.57-strip-upx
+COPY --from=rust-1.57 /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi /out/bin/rust-nightly-build-std
+COPY --from=rust-1.57 /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi-upx /out/bin/rust-nightly-build-std-upx
+COPY --from=rust-1.57 /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi /out/bin/rust-nightly-immediate-abort
+COPY --from=rust-1.57 /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi-upx /out/bin/rust-nightly-immediate-abort-upx
 COPY --from=c-and-asm /src/c-glibc/hi /out/bin/c-glibc
 COPY --from=c-and-asm /src/c-glibc/hi-upx /out/bin/c-glibc-upx
 COPY --from=c-and-asm /src/c-musl/hi /out/bin/c-musl
