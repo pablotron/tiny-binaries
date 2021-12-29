@@ -99,8 +99,9 @@ WORKDIR /src
 
 # note: upx --brute doesn't seem to work for rust binaries
 # ref: https://github.com/johnthagen/min-sized-rust
+# note: libc6-dev needed for build-std
 RUN apt-get update && \
-    apt-get install -y upx-ucl && \
+    apt-get install -y upx-ucl libc6-dev && \
     rm -rf /var/lib/apt/lists/* && \
     rustup toolchain install nightly && \
     rustup component add rust-src --toolchain nightly && \
