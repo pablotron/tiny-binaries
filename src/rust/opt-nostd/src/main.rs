@@ -8,7 +8,7 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
   const HI: &'static str = "hi!\n\0";
 
 	unsafe {
-		libc::printf(HELLO.as_ptr() as *const _);
+		libc::printf(HI.as_ptr() as *const _);
 	}
 
 	0
