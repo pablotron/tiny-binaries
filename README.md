@@ -56,9 +56,9 @@ Generated using the following languages and build methods:
 | `rust-1.57-oz` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, and `profile.release.opt-level = "z"`. |
 | `rust-1.57-oz-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.panic = "abort"`, and `profile.release.opt-level = "z"`, then packed with [upx][]. |
 | `rust-1.57-all` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip`. |
-| `rust-1.57-all-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, and `profile.release.lto = true`, then stripped with `strip` and packed with [upx][]. |
-| `rust-1.57-nostd` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, then stripped with `strip`. |
-| `rust-1.57-nostd-upx` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, then stripped with `strip` and packed with [upx][]. |
+| `rust-1.57-all-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip` and packed with [upx][]. |
+| `rust-1.57-nostd` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip`. |
+| `rust-1.57-nostd-upx` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip` and packed with [upx][]. |
 | `c-glibc` | C | Statically linked against [glibc][]. |
 | `c-glibc-upx` | C | Statically linked against [glibc][] and packed with [upx][]. |
 | `c-musl` | C | Statically linked against [musl][]. |
