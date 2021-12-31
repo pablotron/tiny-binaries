@@ -45,6 +45,10 @@ Generated using the following languages and build methods:
 | `go-1.17-ldflags` | [Go][] 1.17 | Built with `-ldflags="-s -w"`. |
 | `go-1.17-default-upx` | [Go][] 1.17 | Built with defaults and packed with [upx][]. |
 | `go-1.17-ldflags-upx` | [Go][] 1.17 | Built with `-ldflags="-s -w"` and packed with [upx][]. |
+| `go-1.18beta1-default` | [Go][] 1.18beta1 | Default build options. |
+| `go-1.18beta1-ldflags` | [Go][] 1.18beta1 | Built with `-ldflags="-s -w"`. |
+| `go-1.18beta1-default-upx` | [Go][] 1.18beta1 | Built with defaults and packed with [upx][]. |
+| `go-1.18beta1-ldflags-upx` | [Go][] 1.18beta1 | Built with `-ldflags="-s -w"` and packed with [upx][]. |
 | `rust-1.57-default` | [Rust][] 1.57 | Built with `--release` and `build.rustflags = "-C target-feature=+crt-static"`. |
 | `rust-1.57-default-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, and packed with [upx][]. |
 | `rust-1.57-abort` | [Rust][] 1.57 | Built with `--release` and `profile.release.panic = "abort"`. |
@@ -57,8 +61,6 @@ Generated using the following languages and build methods:
 | `rust-1.57-oz-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.panic = "abort"`, and `profile.release.opt-level = "z"`, then packed with [upx][]. |
 | `rust-1.57-all` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip`. |
 | `rust-1.57-all-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip` and packed with [upx][]. |
-| `rust-1.57-nostd` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip`. |
-| `rust-1.57-nostd-upx` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip` and packed with [upx][]. |
 | `c-glibc` | C | Statically linked against [glibc][]. |
 | `c-glibc-upx` | C | Statically linked against [glibc][] and packed with [upx][]. |
 | `c-musl` | C | Statically linked against [musl][]. |
@@ -78,15 +80,17 @@ Generated using the following languages and build methods:
   `upx --best` instead.
 * `upx` fails with `NotCompressible` when run against `c-musl`.
 * `upx` refuses to compress any of the `asm` binaries.
+* [Rust][] optimization options were borrowed from [Minimizing Rust
+  Binary Size][rust-min].
 * [Rust][] binaries packed with `upx --brute` produced no output, so they use
   `upx --best` instead.
 * [Rust][] nightly has `cargo-features = ["strip"]` but it is not available in
   stable, so I used `strip -s` instead.
 * As of 2021-12-30, [Rust][] nightly fails to build static binaries with
   warnings about `getpwuid_r` and `getaddrinfo` in statically linked
-  binaries.  See `Dockerfile` for full link error.
-* [Rust][] optimization options were borrowed from [Minimizing Rust
-  Binary Size][rust-min].
+  binaries.  See `Dockerfile` for full error.
+* The `opt-nostd` build fails in [Rust][] 1.57 and [Rust][] nightly as of
+  2021-12-31.  See `Dockerfile` for full error.
 * ELF/PH overlap and unverified byte regions used by `asm-elf` were borrowed from
   [Tiny ELF Files: Revisited in 2021][tiny-elf].  Thanks Nathan!
 

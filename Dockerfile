@@ -51,6 +51,20 @@ RUN apk update && \
     upx --brute -o hi-ldflags-upx hi-ldflags
 
 #
+# Go 1.18beta1 build environment.
+#
+FROM golang:1.18beta1-alpine3.15 AS go-1.18beta1
+COPY ./src/go /src
+WORKDIR /src
+
+RUN apk update && \
+    apk add upx && \
+    go build -o hi-default hi.go && \
+    go build -ldflags "-s -w" -o hi-ldflags hi.go && \
+    upx --brute -o hi-default-upx hi-default && \
+    upx --brute -o hi-ldflags-upx hi-ldflags
+
+#
 # Combined build environment for the following:
 #
 # * c-glibc
@@ -103,7 +117,8 @@ WORKDIR /src
 RUN apt-get update && \
     apt-get install -y upx-ucl libc6-dev && \
     rm -rf /var/lib/apt/lists/* && \
-    rustup toolchain install nightly && \
+# nightly disabled, all builds that use it fail w/ errors (see below)
+#    rustup toolchain install nightly && \
 #    rustup component add rust-src --toolchain nightly && \
     \
     cd /src/default && \
@@ -131,13 +146,39 @@ RUN apt-get update && \
     cd /src/opt-strip && \
     cargo build --release && \
     strip -s /src/opt-strip/target/release/hi && \
-    upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi && \
-    \
-    cd /src/opt-nostd && \
-    cargo +nightly build --release && \
-    strip -s /src/opt-nostd/target/release/hi && \
-    upx --best -o /src/opt-nostd/target/release/hi-upx /src/opt-nostd/target/release/hi
-
+    upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi
+#
+# disabled: building with 1.57 and with nightly fails as of 2021-12-31
+# (see error below)
+#     cd /src/opt-nostd && \
+#     cargo +nightly build --release && \
+#     strip -s /src/opt-nostd/target/release/hi && \
+#     upx --best -o /src/opt-nostd/target/release/hi-upx /src/opt-nostd/target/release/hi
+#
+# error (as of 2021-12-31):
+#
+#    Compiling hi v0.1.0 (/src/opt-nostd)
+# error[E0658]: use of unstable library feature 'rustc_private': this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via `Cargo.toml` instead?
+#  --> src/main.rs:4:1
+#   |
+# 4 | extern crate libc;
+#   | ^^^^^^^^^^^^^^^^^^
+#   |
+#   = note: see issue #27812 <https://github.com/rust-lang/rust/issues/27812> for more information
+#   = help: add `#![feature(rustc_private)]` to the crate attributes to enable
+# 
+# error[E0658]: use of unstable library feature 'rustc_private': this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via `Cargo.toml` instead?
+#   --> src/main.rs:11:3
+#    |
+# 11 |         libc::printf(HI.as_ptr() as *const _);
+#    |         ^^^^^^^^^^^^
+#    |
+#    = note: see issue #27812 <https://github.com/rust-lang/rust/issues/27812> for more information
+#    = help: add `#![feature(rustc_private)]` to the crate attributes to enable
+# 
+# For more information about this error, try `rustc --explain E0658`.
+# error: could not compile `hi` due to 2 previous errors
+#
 #
 # disabled: building with rust nightly fails as of 2021-12-31 (see error below):
 #
@@ -188,6 +229,10 @@ COPY --from=go-1.17 /src/hi-default /out/bin/go-1.17-default
 COPY --from=go-1.17 /src/hi-ldflags /out/bin/go-1.17-ldflags
 COPY --from=go-1.17 /src/hi-default-upx /out/bin/go-1.17-default-upx
 COPY --from=go-1.17 /src/hi-ldflags-upx /out/bin/go-1.17-ldflags-upx
+COPY --from=go-1.18beta1 /src/hi-default /out/bin/go-1.18beta1-default
+COPY --from=go-1.18beta1 /src/hi-ldflags /out/bin/go-1.18beta1-ldflags
+COPY --from=go-1.18beta1 /src/hi-default-upx /out/bin/go-1.18beta1-default-upx
+COPY --from=go-1.18beta1 /src/hi-ldflags-upx /out/bin/go-1.18beta1-ldflags-upx
 COPY --from=rust-1.57 /src/default/target/release/hi /out/bin/rust-1.57-default
 COPY --from=rust-1.57 /src/default/target/release/hi-upx /out/bin/rust-1.57-default-upx
 COPY --from=rust-1.57 /src/opt-abort/target/release/hi /out/bin/rust-1.57-abort
@@ -200,8 +245,9 @@ COPY --from=rust-1.57 /src/opt-oz/target/release/hi /out/bin/rust-1.57-oz
 COPY --from=rust-1.57 /src/opt-oz/target/release/hi-upx /out/bin/rust-1.57-oz-upx
 COPY --from=rust-1.57 /src/opt-strip/target/release/hi /out/bin/rust-1.57-strip
 COPY --from=rust-1.57 /src/opt-strip/target/release/hi-upx /out/bin/rust-1.57-strip-upx
-COPY --from=rust-1.57 /src/opt-nostd/target/release/hi /out/bin/rust-1.57-nostd
-COPY --from=rust-1.57 /src/opt-nostd/target/release/hi-upx /out/bin/rust-1.57-nostd-upx
+# these all fail (see errors above)
+# COPY --from=rust-1.57 /src/opt-nostd/target/release/hi /out/bin/rust-1.57-nostd
+# COPY --from=rust-1.57 /src/opt-nostd/target/release/hi-upx /out/bin/rust-1.57-nostd-upx
 # COPY --from=rust-1.57 /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi /out/bin/rust-nightly-build-std
 # COPY --from=rust-1.57 /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi-upx /out/bin/rust-nightly-build-std-upx
 # COPY --from=rust-1.57 /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi /out/bin/rust-nightly-immediate-abort
