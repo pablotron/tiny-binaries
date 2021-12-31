@@ -57,10 +57,8 @@ Generated using the following languages and build methods:
 | `rust-1.57-oz-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.panic = "abort"`, and `profile.release.opt-level = "z"`, then packed with [upx][]. |
 | `rust-1.57-all` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, `profile.release.panic = "abort"`, and `profile.release.lto = true`, then stripped with `strip`. |
 | `rust-1.57-all-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, and `profile.release.lto = true`, then stripped with `strip` and packed with [upx][]. |
-| `rust-nightly-build-std` | [Rust][] Nightly | Built with `--release`, `build-std=std,panic_abort`, `build.rustflags = "-C target-feature=+crt-static"`, and `profile.release.panic = "abort"`. |
-| `rust-nightly-build-std-upx` | [Rust][] Nightly | Built with `--release`, `build-std=std,panic_abort`, `build.rustflags = "-C target-feature=+crt-static"`, and `profile.release.panic = "abort"`, then packed with [upx][]. |
-| `rust-nightly-immediate-abort` | [Rust][] Nightly | Built with `--release`, `build-std=std,panic_abort`, `build-std-features=panic_immediate_abort`, `build.rustflags = "-C target-feature=+crt-static"`, and `profile.release.panic = "abort"`. |
-| `rust-nightly-immediate-abort-upx` | [Rust][] Nightly | Built with `--release`, `build-std=std,panic_abort`, `build-std-features=panic_immediate_abort`, `build.rustflags = "-C target-feature=+crt-static"`, and `profile.release.panic = "abort"`, then packed with [upx][]. |
+| `rust-1.57-nostd` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, then stripped with `strip`. |
+| `rust-1.57-nostd-upx` | [Rust][] 1.57 | Dependencies on `std` removed.  Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, `profile.release.opt-level = "z"`, then stripped with `strip` and packed with [upx][]. |
 | `c-glibc` | C | Statically linked against [glibc][]. |
 | `c-glibc-upx` | C | Statically linked against [glibc][] and packed with [upx][]. |
 | `c-musl` | C | Statically linked against [musl][]. |
@@ -84,6 +82,9 @@ Generated using the following languages and build methods:
   `upx --best` instead.
 * [Rust][] nightly has `cargo-features = ["strip"]` but it is not available in
   stable, so I used `strip -s` instead.
+* As of 2021-12-30, [Rust][] nightly fails to build static binaries with
+  warnings about `getpwuid_r` and `getaddrinfo` in statically linked
+  binaries.  See `Dockerfile` for full link error.
 * [Rust][] optimization options were borrowed from [Minimizing Rust
   Binary Size][rust-min].
 * ELF/PH overlap and unverified byte regions used by `asm-elf` were borrowed from
