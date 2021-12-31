@@ -103,7 +103,7 @@ WORKDIR /src
 RUN apt-get update && \
     apt-get install -y upx-ucl libc6-dev && \
     rm -rf /var/lib/apt/lists/* && \
-#    rustup toolchain install nightly && \
+    rustup toolchain install nightly && \
 #    rustup component add rust-src --toolchain nightly && \
     \
     cd /src/default && \
@@ -134,7 +134,7 @@ RUN apt-get update && \
     upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi && \
     \
     cd /src/opt-nostd && \
-    cargo build --release && \
+    cargo +nightly build --release && \
     strip -s /src/opt-nostd/target/release/hi && \
     upx --best -o /src/opt-nostd/target/release/hi-upx /src/opt-nostd/target/release/hi
 
