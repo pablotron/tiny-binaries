@@ -30,8 +30,7 @@ db 0x7f, 'E', 'L', 'F'
 code_0:
   push dword str  ; push string onto stack (68 68 69 21 0a)
   inc al          ; write() (fe c0)
-  ; inc di          ; fd (66 ff c7)
-  mov edi, eax    ; fd (89 c7)
+  inc edi         ; fd (ff c7)
   jmp code_1      ; jump to next chunk (eb 18)
   db 0            ; pad (00)
 
