@@ -9,7 +9,7 @@ _start:
   push dword str  ; push str (68 68 69 21 0a)
 
   inc al          ; write() (fe c0)
-  mov dl, al      ; fd (88 c2)
+  inc edi         ; fd (ff c7)
   mov rsi, rsp    ; msg (48 89 e6)
   mov dl, 4       ; len (b2 04)
   syscall         ; call write() (0f 05)
