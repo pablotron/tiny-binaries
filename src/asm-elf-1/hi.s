@@ -53,7 +53,7 @@ dq ph_start
 
 ; second code chunk
 code_1:
-  mov edi, eax    ; fd (89 c7)
+  inc edi         ; fd (ff c7)
   mov dl, 4       ; len (b2 04)
   syscall         ; call write() (0f 05)
 
