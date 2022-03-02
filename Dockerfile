@@ -227,6 +227,50 @@ RUN apt-get update && \
 #
 
 #
+# Rust 1.59 build environment
+#
+FROM rust:1.59-bullseye AS rust-1.59
+COPY ./src/rust /src
+WORKDIR /src
+
+# note: upx --brute doesn't seem to work for rust binaries
+# ref: https://github.com/johnthagen/min-sized-rust
+# note: libc6-dev needed for build-std
+RUN apt-get update && \
+    apt-get install -y upx-ucl libc6-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+# nightly disabled, all builds that use it fail w/ errors (see below)
+#    rustup toolchain install nightly && \
+#    rustup component add rust-src --toolchain nightly && \
+    \
+    cd /src/default && \
+    cargo build --release && \
+    upx --best -o /src/default/target/release/hi-upx /src/default/target/release/hi && \
+    \
+    cd /src/opt-abort && \
+    cargo build --release && \
+    strip -s /src/opt-abort/target/release/hi && \
+    upx --best -o /src/opt-abort/target/release/hi-upx /src/opt-abort/target/release/hi && \
+    \
+    cd /src/opt-all && \
+    cargo build --release && \
+    strip -s /src/opt-all/target/release/hi && \
+    upx --best -o /src/opt-all/target/release/hi-upx /src/opt-all/target/release/hi && \
+    \
+    cd /src/opt-lto && \
+    cargo build --release && \
+    upx --best -o /src/opt-lto/target/release/hi-upx /src/opt-lto/target/release/hi && \
+    \
+    cd /src/opt-oz && \
+    cargo build --release && \
+    upx --best -o /src/opt-oz/target/release/hi-upx /src/opt-oz/target/release/hi && \
+    \
+    cd /src/opt-strip && \
+    cargo build --release && \
+    strip -s /src/opt-strip/target/release/hi && \
+    upx --best -o /src/opt-strip/target/release/hi-upx /src/opt-strip/target/release/hi
+
+#
 # generate CSV and SVGs
 #
 FROM ruby:3.0.3-slim-bullseye AS data
@@ -275,6 +319,18 @@ COPY --from=rust-1.57 /src/opt-strip/target/release/hi-upx /out/bin/rust-1.57-st
 # COPY --from=rust-1.57 /src/opt-build-std/target/x86_64-unknown-linux-gnu/hi-upx /out/bin/rust-nightly-build-std-upx
 # COPY --from=rust-1.57 /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi /out/bin/rust-nightly-immediate-abort
 # COPY --from=rust-1.57 /src/opt-immediate-abort/target/x86_64-unknown-linux-gnu/hi-upx /out/bin/rust-nightly-immediate-abort-upx
+COPY --from=rust-1.59 /src/default/target/release/hi /out/bin/rust-1.59-default
+COPY --from=rust-1.59 /src/default/target/release/hi-upx /out/bin/rust-1.59-default-upx
+COPY --from=rust-1.59 /src/opt-abort/target/release/hi /out/bin/rust-1.59-abort
+COPY --from=rust-1.59 /src/opt-abort/target/release/hi-upx /out/bin/rust-1.59-abort-upx
+COPY --from=rust-1.59 /src/opt-all/target/release/hi /out/bin/rust-1.59-all
+COPY --from=rust-1.59 /src/opt-all/target/release/hi-upx /out/bin/rust-1.59-all-upx
+COPY --from=rust-1.59 /src/opt-lto/target/release/hi /out/bin/rust-1.59-lto
+COPY --from=rust-1.59 /src/opt-lto/target/release/hi-upx /out/bin/rust-1.59-lto-upx
+COPY --from=rust-1.59 /src/opt-oz/target/release/hi /out/bin/rust-1.59-oz
+COPY --from=rust-1.59 /src/opt-oz/target/release/hi-upx /out/bin/rust-1.59-oz-upx
+COPY --from=rust-1.59 /src/opt-strip/target/release/hi /out/bin/rust-1.59-strip
+COPY --from=rust-1.59 /src/opt-strip/target/release/hi-upx /out/bin/rust-1.59-strip-upx
 COPY --from=c-and-asm /src/c-glibc/hi /out/bin/c-glibc
 COPY --from=c-and-asm /src/c-glibc/hi-upx /out/bin/c-glibc-upx
 COPY --from=c-and-asm /src/c-musl/hi /out/bin/c-musl
