@@ -37,6 +37,9 @@ plt.xscale('log')
 plt.title('All Static Binary Sizes', fontsize = 9)
 plt.tight_layout()
 
+# plt.set_figwidth(6.4) # default 4.8
+plt.set_figheight(6.4) # default 4.8
+
 # save image
 plt.savefig(sys.argv[2])
 
