@@ -39,8 +39,8 @@ plt.tight_layout()
 
 # resize output figure
 fig = plt.figure()
-# plt.set_figwidth(6.4) # default 6.4
-plt.set_figheight(6.4) # default 4.8
+# fig.set_figwidth(6.4) # default 6.4
+fig.set_figheight(6.4) # default 4.8
 
 # save image
 plt.savefig(sys.argv[2])
