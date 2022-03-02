@@ -20,6 +20,11 @@ if len(sys.argv) < 3:
 rows = read_csv(sys.argv[1])
 lo_rows = [row for row in rows if (int(row['size']) <= 1024)]
 
+# resize output figure
+fig = plt.figure()
+# fig.set_figwidth(6.4) # default 6.4
+fig.set_figheight(6.4) # default 4.8
+
 # plot sizes
 plt.barh(
   np.arange(len(rows)),
@@ -36,11 +41,6 @@ plt.ylabel('Language and Build Method')
 plt.xscale('log')
 plt.title('All Static Binary Sizes', fontsize = 9)
 plt.tight_layout()
-
-# resize output figure
-fig = plt.figure()
-# fig.set_figwidth(6.4) # default 6.4
-fig.set_figheight(6.4) # default 4.8
 
 # save image
 plt.savefig(sys.argv[2])
