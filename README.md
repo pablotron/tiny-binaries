@@ -8,6 +8,12 @@ Tiny static x86-64 Linux binaries which do the following:
 The binaries were generated using a variety of languages and build
 methods, then sorted by size.
 
+The results from this test were used in the following posts:
+
+* [Tiny Binaries][tb-orig]
+* [Tiny Binaries: Assembly Optimization][tb-asm]
+* [Tiny Binaries Redux][tb-redux]
+
 ## Results
 
 Plot of all results (**Note:** [log scale][] X axis):
@@ -184,3 +190,9 @@ wc -c *
   "Minimizing Rust Binary Size"
 [tinygo]: https://tinygo.org/
   "Tiny Go compiler for microcontroller and WebAssembly targets."
+[tb]: https://pablotron.org/2021/12/31/tiny-binaries/
+  "Tiny Binaries"
+[tb-asm]: https://pablotron.org/2022/01/01/tiny-binaries-assembly-optimization/
+  "Tiny Binaries: Assembly Optimization"
+[tb-redux]: https://pablotron.org/2022/03/02/tiny-binaries-redux/
+  "Tiny Binaries Redux"
