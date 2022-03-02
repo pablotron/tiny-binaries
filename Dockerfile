@@ -232,7 +232,7 @@ RUN apt-get update && \
 FROM ruby:3.0.3-slim-bullseye AS data
 RUN mkdir -p /out/bin /out/data && \
     apt-get update && \
-    apt-get install -y python3-matplotlib python3-numpy && \
+    apt-get install -y python3-matplotlib python3-numpy minify && \
     rm -rf /var/lib/apt/lists/*
 
 # copy generated binaries
@@ -286,8 +286,11 @@ COPY --from=c-and-asm /src/asm-elf/hi /out/bin/asm-elf
 COPY ./bin/gen.rb /gen.rb
 COPY ./bin/plot.py /plot.py
 
-# generate generate csv and svgs
-RUN ["/gen.rb", "/out/data/sizes.csv", "/out/data/sizes-all.svg", "/out/data/sizes-tiny.svg"]
+# generate generate csv and minified svgs
+RUN /gen.rb /out/data/sizes.csv /tmp/sizes-all.svg /tmp/sizes-tiny.svg && \
+    /usr/bin/minify /tmp/sizes-all.svg > /out/data/sizes-all.svg && \
+    /usr/bin/minify /tmp/sizes-tiny.svg > /out/data/sizes-tiny.svg && \
+    rm /tmp/sizes-all.svg /tmp/sizes-tiny.svg
 
 #
 # Final image which copies generated binaries to /data/bin, generated
