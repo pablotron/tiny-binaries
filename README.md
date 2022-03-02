@@ -45,10 +45,14 @@ Generated using the following languages and build methods:
 | `go-1.17-ldflags` | [Go][] 1.17 | Built with `-ldflags="-s -w"`. |
 | `go-1.17-default-upx` | [Go][] 1.17 | Built with defaults and packed with [upx][]. |
 | `go-1.17-ldflags-upx` | [Go][] 1.17 | Built with `-ldflags="-s -w"` and packed with [upx][]. |
-| `go-1.18beta1-default` | [Go][] 1.18beta1 | Default build options. |
-| `go-1.18beta1-ldflags` | [Go][] 1.18beta1 | Built with `-ldflags="-s -w"`. |
-| `go-1.18beta1-default-upx` | [Go][] 1.18beta1 | Built with defaults and packed with [upx][]. |
-| `go-1.18beta1-ldflags-upx` | [Go][] 1.18beta1 | Built with `-ldflags="-s -w"` and packed with [upx][]. |
+| `go-1.18rc1-default` | [Go][] 1.18rc1 | Default build options. |
+| `go-1.18rc1-ldflags` | [Go][] 1.18rc1 | Built with `-ldflags="-s -w"`. |
+| `go-1.18rc1-default-upx` | [Go][] 1.18rc1 | Built with defaults and packed with [upx][]. |
+| `go-1.18rc1-ldflags-upx` | [Go][] 1.18rc1 | Built with `-ldflags="-s -w"` and packed with [upx][]. |
+| `tinygo-0.22-default` | [TinyGo][] 0.22.0 | Default build options. |
+| `tinyGo-0.22-nodebug` | [TinyGo][] 0.22.0 | Built with `-no-debug`. |
+| `tinygo-0.22-default-upx` | [TinyGo][] 0.22.0 | Built with defaults and packed with [upx][]. |
+| `tinygo-0.22-ldflags-upx` | [TinyGo][] 0.22.0 | Built with `-no-debug` and packed with [upx][]. |
 | `rust-1.57-default` | [Rust][] 1.57 | Built with `--release` and `build.rustflags = "-C target-feature=+crt-static"`. |
 | `rust-1.57-default-upx` | [Rust][] 1.57 | Built with `--release`, `build.rustflags = "-C target-feature=+crt-static"`, and packed with [upx][]. |
 | `rust-1.57-abort` | [Rust][] 1.57 | Built with `--release` and `profile.release.panic = "abort"`. |
@@ -166,3 +170,5 @@ wc -c *
   "LLVM C language frontend compiler"
 [rust-min]: https://github.com/johnthagen/min-sized-rust
   "Minimizing Rust Binary Size"
+[tinygo]: https://tinygo.org/
+  "Tiny Go compiler for microcontroller and WebAssembly targets."

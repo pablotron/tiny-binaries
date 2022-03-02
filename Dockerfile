@@ -51,9 +51,9 @@ RUN apk update && \
     upx --brute -o hi-ldflags-upx hi-ldflags
 
 #
-# Go 1.18beta1 build environment.
+# Go 1.18rc1 build environment.
 #
-FROM golang:1.18beta1-alpine3.15 AS go-1.18beta1
+FROM golang:1.18rc1-alpine3.15 AS go-1.18rc1
 COPY ./src/go /src
 WORKDIR /src
 
@@ -63,6 +63,21 @@ RUN apk update && \
     go build -ldflags "-s -w" -o hi-ldflags hi.go && \
     upx --brute -o hi-default-upx hi-default && \
     upx --brute -o hi-ldflags-upx hi-ldflags
+
+#
+# tinygo 0.22 build environment
+#
+FROM tinygo/tinygo:0.22.0 AS tinygo-0.22
+COPY ./src/go /src
+WORKDIR /src
+
+RUN apt-get update && \
+    apt-get install -y upx-ucl && \
+    rm -rf /var/lib/apt/lists/* && \
+    tinygo build -o hi-default hi.go && \
+    tinygo build -no-debug -o hi-nodebug hi.go && \
+    upx --brute -o hi-default-upx hi-default && \
+    upx --brute -o hi-nodebug-upx hi-nodebug
 
 #
 # Combined build environment for the following:
@@ -229,10 +244,18 @@ COPY --from=go-1.17 /src/hi-default /out/bin/go-1.17-default
 COPY --from=go-1.17 /src/hi-ldflags /out/bin/go-1.17-ldflags
 COPY --from=go-1.17 /src/hi-default-upx /out/bin/go-1.17-default-upx
 COPY --from=go-1.17 /src/hi-ldflags-upx /out/bin/go-1.17-ldflags-upx
-COPY --from=go-1.18beta1 /src/hi-default /out/bin/go-1.18beta1-default
-COPY --from=go-1.18beta1 /src/hi-ldflags /out/bin/go-1.18beta1-ldflags
-COPY --from=go-1.18beta1 /src/hi-default-upx /out/bin/go-1.18beta1-default-upx
-COPY --from=go-1.18beta1 /src/hi-ldflags-upx /out/bin/go-1.18beta1-ldflags-upx
+# COPY --from=go-1.18beta1 /src/hi-default /out/bin/go-1.18beta1-default
+# COPY --from=go-1.18beta1 /src/hi-ldflags /out/bin/go-1.18beta1-ldflags
+# COPY --from=go-1.18beta1 /src/hi-default-upx /out/bin/go-1.18beta1-default-upx
+# COPY --from=go-1.18beta1 /src/hi-ldflags-upx /out/bin/go-1.18beta1-ldflags-upx
+COPY --from=go-1.18rc1 /src/hi-default /out/bin/go-1.18rc1-default
+COPY --from=go-1.18rc1 /src/hi-ldflags /out/bin/go-1.18rc1-ldflags
+COPY --from=go-1.18rc1 /src/hi-default-upx /out/bin/go-1.18rc1-default-upx
+COPY --from=go-1.18rc1 /src/hi-ldflags-upx /out/bin/go-1.18rc1-ldflags-upx
+COPY --from=tinygo-0.22 /src/hi-default /out/bin/tinygo-0.22-default
+COPY --from=tinygo-0.22 /src/hi-nodebug /out/bin/tinygo-0.22-nodebug
+COPY --from=tinygo-0.22 /src/hi-default-upx /out/bin/tinygo-0.22-default-upx
+COPY --from=tinygo-0.22 /src/hi-nodebug-upx /out/bin/tinygo-0.22-nodebug-upx
 COPY --from=rust-1.57 /src/default/target/release/hi /out/bin/rust-1.57-default
 COPY --from=rust-1.57 /src/default/target/release/hi-upx /out/bin/rust-1.57-default-upx
 COPY --from=rust-1.57 /src/opt-abort/target/release/hi /out/bin/rust-1.57-abort
