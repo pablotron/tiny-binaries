@@ -8,9 +8,10 @@ Tiny static x86-64 Linux binaries which do the following:
 The binaries were generated using a variety of languages and build
 methods, then sorted by size.
 
-The results from this test were used in the following posts:
+The results from this test were used in the following posts on [my
+site][]:
 
-* [Tiny Binaries][tb-orig]
+* [Tiny Binaries][tb]
 * [Tiny Binaries: Assembly Optimization][tb-asm]
 * [Tiny Binaries Redux][tb-redux]
 
@@ -196,3 +197,5 @@ wc -c *
   "Tiny Binaries: Assembly Optimization"
 [tb-redux]: https://pablotron.org/2022/03/02/tiny-binaries-redux/
   "Tiny Binaries Redux"
+[my site]: https://pablotron.org/
+  "my personal site."
